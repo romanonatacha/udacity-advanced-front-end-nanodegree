@@ -1,0 +1,46 @@
+* {
+    box-sizing: border-box;
+}
+
+#catTitle {
+    color: rgb(71, 189, 175);
+    text-transform: uppercase;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 30px;
+    font-size: 30px;   
+}
+
+#catCount {
+    color: rgb(71, 189, 175);
+    text-transform: uppercase;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 50px;   
+}
+
+.brand-logo {
+    margin-left: 30px;
+}
+
+.main-content {
+    padding-top: 50px;;
+    text-align: center;
+}
+
+.main-content__image {
+    width: 40%;
+}
+
+.main-content__image:hover {
+    width: 41%;
+    cursor: pointer;
+}
+
+h4 {
+    color: rgb(71, 189, 175);
+    font-weight: bold;
+    text-align: center;
+    font-size: 100px;   
+}
