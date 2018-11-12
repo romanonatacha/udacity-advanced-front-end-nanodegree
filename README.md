@@ -7,7 +7,7 @@ Some of the exercises that I resolved on the course.
 Clone this repository
 
 ```
-git clone https://github.com/romanonatacha/udacity-arcade-game.git
+git clone https://github.com/romanonatacha/udacity-advanced-front-end-nanodegree.git
 ```
 
 ### Installing
