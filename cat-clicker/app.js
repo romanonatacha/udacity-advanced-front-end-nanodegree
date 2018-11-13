@@ -1,57 +1,144 @@
-(function () {
-    var catCount = document.getElementById("catCount");
 
-    var CatButton = function (selector) {
-        this.element = document.getElementById(selector);
-        this.catClickCount = 0;
-    };
+/* ======= Model ======= */
 
-    CatButton.prototype.addEvent = function (event, fn) {
-        this.element.addEventListener(event, fn);
-    };
-
-    var Cat = {
-        image: document.getElementById("catImage"),
-        title: document.getElementById("catTitle"),
-        setSrc: function (src) {
-            this.image.src = src;
+const model = {
+    currentCat: null,
+    cats: [
+        {
+            clickCount : 0,
+            name : 'Luna',
+            imgSrc : 'kitten.jpg',
         },
-        setTitleText: function (title) {
-            this.title.innerHTML = title;
+        {
+            clickCount : 0,
+            name : 'Fred',
+            imgSrc : 'kitten-2.jpg',
+        },
+        {
+            clickCount : 0,
+            name : 'Mike',
+            imgSrc : 'kitten-3.jpg',
+        },
+        {
+            clickCount : 0,
+            name : 'Frida',
+            imgSrc : 'kitten-4.jpg',
+        },
+        {
+            clickCount : 0,
+            name : 'Venus',
+            imgSrc : 'kitten-5.jpg',
         }
-    };
+    ]
+};
 
-    var catButtonOne = new CatButton("catButtonOne");
-    var catButtonTwo = new CatButton("catButtonTwo");
-    var catButtonThree = new CatButton("catButtonThree");
-    var catButtonFour = new CatButton("catButtonFour");
-    var catButtonFive = new CatButton("catButtonFive");
 
-    catButtonOne.addEvent("click", function () {
-        addCatInfo(this, "kitten.jpg", "Luna");
-    }.bind(catButtonOne));
+/* ======= Octopus ======= */
 
-    catButtonTwo.addEvent("click", function () {
-        addCatInfo(this, "kitten-2.jpg", "Fred");
-    }.bind(catButtonTwo));
+const octopus = {
 
-    catButtonThree.addEvent("click", function () {
-        addCatInfo(this, "kitten-3.jpg", "Mike");
-    }.bind(catButtonThree));
+    init: function() {
+        // set our current cat to the first one in the list
+        model.currentCat = model.cats[0];
 
-    catButtonFour.addEvent("click", function () {
-        addCatInfo(this, "kitten-4.jpg", "Frida");
-    }.bind(catButtonFour));
+        // tell our views to initialize
+        catListView.init();
+        catView.init();
+    },
 
-    catButtonFive.addEvent("click", function () {
-        addCatInfo(this, "kitten-5.jpg", "Venus");
-    }.bind(catButtonFive));
+    getCurrentCat: function() {
+        return model.currentCat;
+    },
 
-    function addCatInfo(selfElement, catSrc, catTitle) {
-        Cat.setSrc(catSrc);
-        Cat.setTitleText(catTitle);
-        selfElement.catClickCount++;
-        catCount.innerHTML = selfElement.catClickCount;
+    getCats: function() {
+        return model.cats;
+    },
+
+    // set the currently-selected cat to the object passed in
+    setCurrentCat: function(cat) {
+        model.currentCat = cat;
+    },
+
+    // increments the counter for the currently-selected cat
+    incrementCounter: function() {
+        model.currentCat.clickCount++;
+        catView.render();
     }
+};
 
-}());
+
+/* ======= View ======= */
+
+const catView = {
+
+    init: function() {
+        // store pointers to our DOM elements for easy access later
+        this.catElem = document.getElementById('cat');
+        this.catNameElem = document.getElementById('cat-name');
+        this.catImageElem = document.getElementById('cat-img');
+        this.countElem = document.getElementById('cat-count');
+
+        // on click, increment the current cat's counter
+        this.catImageElem.addEventListener('click', function(){
+            octopus.incrementCounter();
+        });
+
+        // render this view (update the DOM elements with the right values)
+        this.render();
+    },
+
+    render: function() {
+        // update the DOM elements with values from the current cat
+        let currentCat = octopus.getCurrentCat();
+        this.countElem.textContent = currentCat.clickCount;
+        this.catNameElem.textContent = currentCat.name;
+        this.catImageElem.src = currentCat.imgSrc;
+    }
+};
+
+const catListView = {
+
+    init: function() {
+        // store the DOM element for easy access later
+        this.catListElem = document.getElementById('cat-list');
+
+        // render this view (update the DOM elements with the right values)
+        this.render();
+    },
+
+    render: function() {
+        let cat, elem, i;
+        // get the cats we'll be rendering from the octopus
+        var cats = octopus.getCats();
+
+        // empty the cat list
+        this.catListElem.innerHTML = '';
+
+        // loop over the cats
+        for (i = 0; i < cats.length; i++) {
+            // this is the cat we're currently looping over
+            cat = cats[i];
+
+            // make a new cat list item and set its text
+            elem = document.createElement('li');
+            elem.classList.add("waves-effect", "waves-light","btn-small");
+            elem.textContent = cat.name;
+
+            // on click, setCurrentCat and render the catView
+            // (this uses our closure-in-a-loop trick to connect the value
+            //  of the cat variable to the click event function)
+            elem.addEventListener('click', (function(catCopy) {
+                return function() {
+                    octopus.setCurrentCat(catCopy);
+                    catView.render();
+                };
+            })(cat));
+
+            // finally, add the element to the list
+            this.catListElem.appendChild(elem);
+        }
+    }
+};
+
+// make it go!
+octopus.init();
