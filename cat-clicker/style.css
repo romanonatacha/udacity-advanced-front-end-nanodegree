@@ -57,3 +57,7 @@ h3 {
 footer {
     margin-top: 100px;
 }
+
+#admin-form {
+    width: 40%;
+}
